@@ -2,8 +2,14 @@ import requests as r
 from bs4 import  BeautifulSoup
 import os
 import urllib.parse
-form = int(input(' 1.form 2-4  2.form 3-4  3.form 5-6 \n'))
+while True:
+	try:
+		form = int(input(' 1.form 2-4  2.form 3-4  3.form 5-6 \n'))
+	except ValueError:
+		print('pls input an integer not a float nor string')
+	
 subject = input('subject\n').split(',')
+assert isinstance(subject,str),'pls input a subject not a number'
 print('will u be using - or , for yrs')
 yrs = input('enter a yr\n')
 def split(yr):
@@ -47,11 +53,32 @@ def create_files(links):
 			with open(file_path,'wb') as f:
 				f.write(response.content)
 				print(name)
+				progress_bar(response=response)
 		else:
 			fl_path=os.path.join(necta_dir,name)
 			with open(fl_path,'wb')as f:
 				f.write(response.content)
 				print(name)
+				progress_bar(response=response)
+def progress_bar(response):
+	file_size= int(response.headers.get('Content-Length'))
+	print(file_size)
+	chunk_size=1024 #1kb
+	bytes_downloaded=0
+	bar_width=50
+	if file_size is None:
+		pass
+	else:
+		for chunk in response.iter_content(chunk_size=chunk_size):
+			bytes_downloaded+=len(chunk)
+			progress=int(bytes_downloaded/file_size)*100
+			filled_width = int(progress* bar_width / 100)
+			remaining_width=progress-filled_width
+			progressbar_ = "█" * filled_width + " " * remaining_width
+			sys.stdout.write(f"\rProgress: [{progressbar_}] {progress:.2f}%")
+			sys.stdout.flush()
+		print('Download complete')
+					
 def download_link(form_):
 	if form_==1:
 		url= 'https://maktaba.tetea.org/resources/form-1-2/'
