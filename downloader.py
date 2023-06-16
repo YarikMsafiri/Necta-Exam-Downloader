@@ -9,7 +9,7 @@ while True:
 		print('pls input an integer not a float nor string')
 	
 subject = input('subject\n').split(',')
-assert isinstance(subject,str),'pls input a subject not a number'
+
 print('will u be using - or , for yrs')
 yrs = input('enter a yr\n')
 def split(yr):
